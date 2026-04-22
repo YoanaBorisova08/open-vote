@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegisteredUserController;
@@ -48,9 +49,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/comment/{comment}', [CommentsController::class, 'destroy'])->name('suggestions.comment.destroy');
 });
 Route::get('/suggestions/{suggestion}', [SuggestionsController::class, 'show'])->name('suggestions.show');
+Route::patch('/suggestions/{suggestion}/status', [AdminController::class, 'updateStatus'])->name('suggestions.status')->middleware('can:admin');
 
 Route::get('/forum', [DashboardController::class, 'forum'])->name('forum');
 Route::middleware('auth')->group(function () {
     Route::get('/my-votes', [DashboardController::class, 'my_votes'])->name('my-votes');
     Route::get('/profile', [DashboardController::class, 'profile'])->name('profile');
 });
+
+

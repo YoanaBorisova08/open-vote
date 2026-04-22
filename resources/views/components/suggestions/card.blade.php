@@ -1,15 +1,46 @@
+@php use App\Enums\SuggestionStatus; @endphp
 @props(['suggestion', 'active' => false])
 
-<a href="{{$active ? '' : route('suggestions.show', $suggestion)}}" class="block">
-    <article {{ $attributes->merge(['class' => 'bg-surface-light border
-        border-border rounded-2xl p-5 flex flex-col gap-3']) }}>
+@if(!$active)
+    <a href="{{ route('suggestions.show', $suggestion) }}" class="block">
+@endif
+
+    <article {{ $attributes->merge(['class' => 'bg-surface-light border border-border rounded-2xl p-5 flex flex-col gap-3']) }}>
 
         <div class="flex items-start justify-between">
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide {{ $suggestion->color() }}">
-                                    {{ $suggestion->status->value }}
-            </span>
+            <div>
+                @can('admin')
+                    @if($active)
+                        <form method="POST" action="{{ route('suggestions.status', $suggestion) }}" onclick="event.stopPropagation()">
+                            @csrf
+                            @method('PATCH')
+                            <div class="flex items-center gap-2">
+                                <select name="status"
+                                        class="inline-flex items-center text-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide cursor-pointer {{ $suggestion->color() }}">
+                                    @foreach(SuggestionStatus::cases() as $statusOption)
+                                        <option value="{{ $statusOption->value }}"
+                                            {{ $suggestion->status === $statusOption ? 'selected' : '' }}>
+                                            {{ ucfirst($statusOption->value) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <button type="submit" class="text-xs text-muted hover:text-primary-dark">✓</button>
+                            </div>
+                        </form>
+                    @else
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide {{ $suggestion->color() }}">
+                        {{ $suggestion->status->value }}
+                    </span>
+                    @endif
+                @else
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide {{ $suggestion->color() }}">
+                    {{ $suggestion->status->value }}
+                </span>
+                @endcan
+            </div>
+
             <div class="flex items-center gap-1.5 text-sm text-muted">
-                <form method="POST" action="{{route('suggestions.vote', $suggestion) }}">
+                <form method="POST" action="{{ route('suggestions.vote', $suggestion) }}" onclick="event.stopPropagation()">
                     @csrf
                     <button type="submit" style="font-size:16px;">
                         {{ $suggestion->votes->contains('user_id', auth()->id()) ? '❤️' : '🤍' }}
@@ -19,11 +50,10 @@
             </div>
         </div>
 
-        <p class="{{ $active ? 'text-xl' : 'text-base'}} font-semibold text-green-900">{{ $suggestion->title }}</p>
+        <p class="{{ $active ? 'text-xl' : 'text-base h-12' }} font-semibold text-green-900 line-clamp-2">{{ $suggestion->title }}</p>
         @if($active)
             <p class="text-md text-green-900 mb-3">{{ $suggestion->description }}</p>
         @endif
-
 
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -36,4 +66,7 @@
         </div>
 
     </article>
-</a>
+
+@if(!$active)
+    </a>
+@endif

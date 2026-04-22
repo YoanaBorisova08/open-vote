@@ -54,4 +54,5 @@ class DashboardController extends Controller
             'user' => Auth::user(),
         ]);
     }
+
 }

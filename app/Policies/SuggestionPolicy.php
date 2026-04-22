@@ -10,7 +10,7 @@ class SuggestionPolicy
 {
     public function modify(User $user, Suggestion $suggestion): bool
     {
-        return $suggestion->user()->is($user);
+        return $suggestion->user()->is($user) || $user->can('admin');
     }
 
 }
