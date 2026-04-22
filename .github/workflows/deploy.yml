@@ -1,0 +1,50 @@
+name: Deploy to sPanel
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Install PHP dependencies
+        run: composer install --no-dev --ignore-platform-reqs --optimize-autoloader
+
+      - name: Remove platform check
+        run: |
+          rm -f vendor/composer/platform_check.php
+          sed -i "/platform_check/d" vendor/composer/autoload_real.php
+
+      - name: Install Node dependencies
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install and build assets
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: /home/yoana/projects/open-vote/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            .env
+            .env.*
