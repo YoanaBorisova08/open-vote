@@ -42,6 +42,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./
           server-dir: /home/yoana/projects/open-vote/
+          dangerous-clean-slate: true
           exclude: |
             **/.git*
             **/.git*/**
