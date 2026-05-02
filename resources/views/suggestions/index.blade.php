@@ -4,6 +4,8 @@
 
 <x-layout>
     <div class="flex flex-col items-center justify-center w-4xl gap-4 mx-auto">
+
+        {{-- This handles the search option --}}
         <div class=" w-md self-end mt-10">
             <form method="GET" action="{{ route('suggestions.index') }}" class="flex items-center gap-2 justify-end">
 

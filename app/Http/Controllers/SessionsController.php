@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -19,10 +21,10 @@ class SessionsController extends Controller
             'password' => ['required', 'string', 'min:5'],
         ]);
 
-        if (! Auth::attempt($validated)){
+        if (! Auth::attempt($validated)) {
             return back()
                 ->withErrors([
-                'password' => 'The provided credentials do not match our records.'
+                    'password' => 'The provided credentials do not match our records.',
                 ])
                 ->withInput();
         }
@@ -37,6 +39,7 @@ class SessionsController extends Controller
         Auth::logout();
         session()->invalidate();
         session()->regenerateToken();
+
         return to_route('home');
     }
 }

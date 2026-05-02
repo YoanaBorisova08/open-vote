@@ -11,7 +11,7 @@
             <div>
                 @can('admin')
                     @if($active)
-                        <form method="POST" action="{{ route('suggestions.status', $suggestion) }}" onclick="event.stopPropagation()">
+                        <form method="POST" action="{{ route('suggestions.status.update', $suggestion) }}" onclick="event.stopPropagation()">
                             @csrf
                             @method('PATCH')
                             <div class="flex items-center gap-2">
@@ -40,7 +40,7 @@
             </div>
 
             <div class="flex items-center gap-1.5 text-sm text-muted">
-                <form method="POST" action="{{ route('suggestions.vote', $suggestion) }}" onclick="event.stopPropagation()">
+                <form method="POST" action="{{ route('suggestions.vote.store', $suggestion) }}" onclick="event.stopPropagation()">
                     @csrf
                     <button type="submit" style="font-size:16px;">
                         {{ $suggestion->votes->contains('user_id', auth()->id()) ? '❤️' : '🤍' }}

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Enums\SuggestionStatus;
@@ -12,11 +14,11 @@ class AdminController extends Controller
     public function updateStatus(Suggestion $suggestion, Request $request)
     {
         $request->validate([
-            'status' => ['required', Rule::enum(SuggestionStatus::class)]
+            'status' => ['required', Rule::enum(SuggestionStatus::class)],
         ]);
 
         $suggestion->update([
-            'status' => $request->status
+            'status' => $request->status,
         ]);
 
         return back();

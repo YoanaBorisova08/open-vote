@@ -33,9 +33,10 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'role' => UserRole::class
+            'role' => UserRole::class,
         ];
     }
+
     public function suggestions(): HasMany
     {
         return $this->hasMany(Suggestion::class);
@@ -46,7 +47,8 @@ class User extends Authenticatable
         return $this->hasMany(Vote::class);
     }
 
-    public function comments(): HasMany{
+    public function comments(): HasMany
+    {
         return $this->hasMany(Comment::class);
     }
 }

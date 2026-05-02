@@ -29,7 +29,7 @@
             <div class="bg-surface-light w-2xs p-2 border
                 border-border rounded-2xl text-center text-md text-muted
                 cursor-pointer hover:bg-surface">
-                <a href="{{route('suggestions.comment', $suggestion)}}">✚ Add a comment</a>
+                <a href="{{route('suggestions.comment.create', $suggestion)}}">✚ Add a comment</a>
             </div>
         @endauth
 

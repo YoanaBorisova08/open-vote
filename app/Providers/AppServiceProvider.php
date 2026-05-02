@@ -29,8 +29,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(Suggestion::class, SuggestionPolicy::class);
 
-        Gate::define('admin', function ($user) {
-            return $user->role === UserRole::ADMIN;
-        });
+        Gate::define('admin', fn ($user) => $user->role === UserRole::ADMIN);
     }
 }

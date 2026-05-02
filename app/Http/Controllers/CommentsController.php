@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
@@ -8,10 +10,13 @@ use Illuminate\Http\Request;
 
 class CommentsController extends Controller
 {
-    public function create(Suggestion $suggestion, Request $request)
+    public function create(Suggestion $suggestion)
     {
-        return view('comments.create', compact('suggestion'));
+        return view('comments.create', [
+            'suggestion' => $suggestion,
+        ]);
     }
+
     public function store(Suggestion $suggestion, Request $request)
     {
         $request->validate([
@@ -26,9 +31,11 @@ class CommentsController extends Controller
         return to_route('suggestions.show', ['suggestion' => $suggestion])->with('success', 'Comment added successfully.');
     }
 
-    public function edit(Comment $comment, Request $request)
+    public function edit(Comment $comment)
     {
-        return view('comments.edit', compact('comment'));
+        return view('comments.edit', [
+            'comment',
+        ]);
     }
 
     public function update(Comment $comment, Request $request)

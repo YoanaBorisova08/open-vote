@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\SuggestionStatus;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('suggestions', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\User::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
             $table->string('title');
             $table->text('description');
-            $table->enum('status', array_column(\App\Enums\SuggestionStatus::cases(), 'value'))->default(\App\Enums\SuggestionStatus::NEW->value);
+            $table->enum('status', array_column(SuggestionStatus::cases(), 'value'))->default(SuggestionStatus::NEW->value);
             $table->timestamps();
         });
     }

@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\Suggestion;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function forum()
     {
-        $sort_queries = [
+        $sortQueries = [
             'newest' => ['created_at', 'desc'],
             'oldest' => ['created_at', 'asc'],
             'most_voted' => ['votes_count', 'desc'],
@@ -20,32 +21,30 @@ class DashboardController extends Controller
         $sort = request()->query('sort') ?? 'newest';
         $status = request()->query('status');
 
-        $suggestions = Suggestion::get_with_votes_query()
-            ->orderBy($sort_queries[$sort][0], $sort_queries[$sort][1])
-            ->when($status, function ($query, $status) {
-                return $query->where('status', $status);
-            })
+        $suggestions = Suggestion::getWithVotesQuery()
+            ->orderBy($sortQueries[$sort][0], $sortQueries[$sort][1])
+            ->when($status, fn ($query, $status) => $query->where('status', $status))
             ->paginate(6);
 
-        return view('suggestions.forum', compact([
-            'suggestions',
-            'sort',
-            'status',
-        ]));
+        return view('suggestions.forum', [
+            'suggestions' => $suggestions,
+            'sort' => $sort,
+            'status' => $status,
+        ]);
     }
 
-    public function my_votes()
+    public function myVotes()
     {
-        $suggestions = Suggestion::get_with_votes_query()
+        $suggestions = Suggestion::getWithVotesQuery()
             ->whereHas('votes', function ($query) {
                 $query->where('user_id', Auth::id());
             })
             ->orderBy('votes_count', 'desc')
             ->paginate(6);
 
-        return view('suggestions.votes', compact([
-            'suggestions',
-        ]));
+        return view('suggestions.votes', [
+            'suggestions' => $suggestions,
+        ]);
     }
 
     public function profile()
@@ -54,5 +53,4 @@ class DashboardController extends Controller
             'user' => Auth::user(),
         ]);
     }
-
 }

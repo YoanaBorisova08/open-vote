@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\Suggestion;
@@ -14,8 +16,7 @@ class VotesController extends Controller
 
         if ($vote) {
             $vote->delete();
-        }
-        else{
+        } else {
             $suggestion->votes()->create([
                 'user_id' => Auth::id(),
             ]);

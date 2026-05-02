@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class RegisteredUserController extends Controller
@@ -15,7 +16,8 @@ class RegisteredUserController extends Controller
         return view('auth.register');
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')],
@@ -25,21 +27,23 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => $validated['password']
+            'password' => $validated['password'],
         ]);
 
         Auth::login($user);
+
         return to_route('home')->with('success', 'Registration completed!');
     }
 
     public function edit()
     {
         return view('auth.edit', [
-            'user' => Auth::user()
+            'user' => Auth::user(),
         ]);
     }
 
-    public function update(Request $request){
+    public function update(Request $request)
+    {
         $user = Auth::user();
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -50,7 +54,7 @@ class RegisteredUserController extends Controller
         $user->update([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => $validated['password']
+            'password' => $validated['password'],
         ]);
 
         return to_route('profile')->with('success', 'Profile updated!');
@@ -65,6 +69,7 @@ class RegisteredUserController extends Controller
 
         request()->session()->invalidate();
         request()->session()->regenerateToken();
+
         return to_route('home')->with('success', 'User has been deleted!');
     }
 }

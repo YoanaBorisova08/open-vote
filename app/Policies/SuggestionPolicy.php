@@ -1,16 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\Suggestion;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class SuggestionPolicy
 {
     public function modify(User $user, Suggestion $suggestion): bool
     {
-        return $suggestion->user()->is($user) || $user->can('admin');
-    }
+        if ($suggestion->user()->is($user)) {
+            return true;
+        }
 
+        return $user->can('admin');
+    }
 }

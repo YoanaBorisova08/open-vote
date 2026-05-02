@@ -29,7 +29,6 @@
         @endif
     </div>
 
-    {{-- Comment Body --}}
     <p class="text-sm text-gray-700 leading-relaxed pl-10">{{ $comment->body }}</p>
 
 </div>

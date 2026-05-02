@@ -11,7 +11,7 @@ use App\Http\Controllers\SuggestionsController;
 use App\Http\Controllers\VotesController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn() => to_route('suggestions.index'))->name('home');
+Route::get('/', fn () => to_route('suggestions.index'))->name('home');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
@@ -40,21 +40,19 @@ Route::middleware('auth')->group(function () {
         Route::delete('/suggestions/{suggestion}', [SuggestionsController::class, 'destroy'])->name('suggestions.destroy');
     });
 
-    Route::post('/suggestions/{suggestion}/vote', [VotesController::class, 'update'])->name('suggestions.vote');
+    Route::post('/suggestions/{suggestion}/vote', [VotesController::class, 'update'])->name('suggestions.vote.store');
 
-    Route::get('/suggestions/{suggestion}/comment', [CommentsController::class, 'create'])->name('suggestions.comment');
+    Route::get('/suggestions/{suggestion}/comment', [CommentsController::class, 'create'])->name('suggestions.comment.create');
     Route::post('/suggestions/{suggestion}/comment', [CommentsController::class, 'store'])->name('suggestions.comment.store');
     Route::get('/comment/{comment}/edit', [CommentsController::class, 'edit'])->name('suggestions.comment.edit');
     Route::patch('/comment/{comment}/edit', [CommentsController::class, 'update'])->name('suggestions.comment.update');
     Route::delete('/comment/{comment}', [CommentsController::class, 'destroy'])->name('suggestions.comment.destroy');
 });
 Route::get('/suggestions/{suggestion}', [SuggestionsController::class, 'show'])->name('suggestions.show');
-Route::patch('/suggestions/{suggestion}/status', [AdminController::class, 'updateStatus'])->name('suggestions.status')->middleware('can:admin');
+Route::patch('/suggestions/{suggestion}/status', [AdminController::class, 'updateStatus'])->name('suggestions.status.update')->middleware('can:admin');
 
 Route::get('/forum', [DashboardController::class, 'forum'])->name('forum');
 Route::middleware('auth')->group(function () {
-    Route::get('/my-votes', [DashboardController::class, 'my_votes'])->name('my-votes');
+    Route::get('/my-votes', [DashboardController::class, 'myVotes'])->name('my-votes');
     Route::get('/profile', [DashboardController::class, 'profile'])->name('profile');
 });
-
-

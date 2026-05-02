@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\Suggestion;
@@ -14,27 +16,27 @@ class SuggestionsController extends Controller
     public function index()
     {
         $search = request()->query('search');
-        $search_suggestions = $search ? Suggestion::get_with_votes_query()
+        $search_suggestions = $search ? Suggestion::getWithVotesQuery()
             ->where('title', 'like', "%{$search}%")
             ->orderBy('created_at', 'desc')
             ->paginate(6) : null;
 
-        $popular_suggestions = Suggestion::get_with_votes_query()
+        $popular_suggestions = Suggestion::getWithVotesQuery()
             ->orderBy('votes_count', 'desc')
             ->limit(3)
             ->get();
 
-        $recent_suggestions = Suggestion::get_with_votes_query()
+        $recent_suggestions = Suggestion::getWithVotesQuery()
             ->orderBy('created_at', 'desc')
             ->limit(3)
             ->get();
 
-        return view('suggestions.index', compact(
-        'search',
-        'search_suggestions',
-        'popular_suggestions',
-        'recent_suggestions'
-        ));
+        return view('suggestions.index', [
+            'search' => $search,
+            'search_suggestions' => $search_suggestions,
+            'popular_suggestions' => $popular_suggestions,
+            'recent_suggestions' => $recent_suggestions,
+        ]);
     }
 
     /**
@@ -68,8 +70,9 @@ class SuggestionsController extends Controller
      */
     public function show(Suggestion $suggestion)
     {
-        $suggestion->loadCount('votes')->load('votes', 'user', 'comments');
-        return view('suggestions.show', compact('suggestion'));
+        return view('suggestions.show', [
+            'suggestion' => $suggestion->load('votes', 'user', 'comments')->loadCount('votes'),
+        ]);
     }
 
     /**
@@ -77,7 +80,9 @@ class SuggestionsController extends Controller
      */
     public function edit(Suggestion $suggestion)
     {
-        return view('suggestions.edit', compact('suggestion'));
+        return view('suggestions.edit', [
+            'suggestion' => $suggestion,
+        ]);
     }
 
     /**
@@ -104,6 +109,7 @@ class SuggestionsController extends Controller
     public function destroy(Suggestion $suggestion)
     {
         $suggestion->delete();
+
         return to_route('suggestions.index')->with('success', 'Suggestion deleted successfully.');
     }
 }
