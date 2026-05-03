@@ -41,11 +41,10 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./
-          server-dir: /home/yoana/projects/open-vote/
+          server-dir: /projects/open-vote/
           exclude: |
             **/.git*
             **/.git*/**
             **/node_modules/**
-            **/vendor/**
             .env
             .env.*
